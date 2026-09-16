@@ -479,6 +479,7 @@ export const queueFromPrompts = createServerFn({ method: "POST" })
         language: z.string().min(2).max(40).default("English"),
         style: z.string().min(1).max(40).default("cinematic"),
         format: z.enum(["shorts", "longform"]).default("longform"),
+        settings: z.record(z.string(), z.unknown()).optional(),
         scheduledAt: z.string().datetime().nullable().optional(),
       })
       .parse(input),
