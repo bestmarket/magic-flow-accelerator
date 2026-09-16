@@ -440,11 +440,19 @@ export const queueVideos = createServerFn({ method: "POST" })
             scheduled_at: data.scheduledAt ?? null,
             scenes: cut,
             settings: {
-              format,
-              captions: { enabled: true, size: short ? "lg" : "md", position: short ? "center" : "bottom", color: "#ffffff" },
+              captions: {
+                enabled: true,
+                size: short ? "lg" : "md",
+                position: short ? "center" : "bottom",
+                color: "#ffffff",
+              },
               pacing: short
                 ? { minSceneSeconds: 2.5, gapSeconds: 0.15 }
                 : { minSceneSeconds: 3, gapSeconds: 0.35 },
+              // Anything chosen in the production layout wins, but the frame
+              // shape always follows the format this row is being made for.
+              ...(data.settings ?? {}),
+              format,
             },
           });
         }
