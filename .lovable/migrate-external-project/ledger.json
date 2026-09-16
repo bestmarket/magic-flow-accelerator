@@ -1,0 +1,13 @@
+{
+  "source": "github:bestmarket/geniefriend-magic-flow",
+  "capabilities": [
+    { "capability": "application code", "source": "repo src/", "outcome": "copied", "status": "verified", "next_action": null },
+    { "capability": "schema", "source": "supabase/migrations (squashed 20260916020020)", "outcome": "migrated", "status": "verified", "next_action": null },
+    { "capability": "storage bucket 'media'", "source": "storage policies in migration", "outcome": "recreated private 500MB", "status": "verified", "next_action": null },
+    { "capability": "auth (email + Google)", "source": "auth.tsx", "outcome": "migrated to Lovable Cloud auth", "status": "implemented", "next_action": "blocked: needs one real sign-up/sign-in in the preview to verify" },
+    { "capability": "records/user data", "source": "none supplied", "outcome": "pending", "status": "blocked", "next_action": "request CSV/JSON exports from the original app's database" },
+    { "capability": "scheduled publishing cron", "source": "api/public/hooks/scheduled-videos + cron_config", "outcome": "recreated as pg_cron every 15 min with stored bearer token", "status": "implemented", "next_action": "goes live after publish (targets stable production URL)" },
+    { "capability": "AI features", "source": "src/lib/ai.server.ts", "outcome": "preserved on Lovable AI Gateway", "status": "verified", "next_action": null },
+    { "capability": "secrets", "source": "LOVABLE_DB_MIGRATION_URL only", "outcome": "dropped (dev-tool leftover)", "status": "verified", "next_action": null }
+  ]
+}
