@@ -384,6 +384,7 @@ export const queueVideos = createServerFn({ method: "POST" })
           .min(1)
           .max(2)
           .default(["longform"]),
+        settings: z.record(z.string(), z.unknown()).optional(),
         scheduledAt: z.string().datetime().nullable().optional(),
       })
       .parse(input),
