@@ -384,6 +384,7 @@ export const queueVideos = createServerFn({ method: "POST" })
           .min(1)
           .max(2)
           .default(["longform"]),
+        settings: z.record(z.string(), z.unknown()).optional(),
         scheduledAt: z.string().datetime().nullable().optional(),
       })
       .parse(input),
@@ -439,11 +440,19 @@ export const queueVideos = createServerFn({ method: "POST" })
             scheduled_at: data.scheduledAt ?? null,
             scenes: cut,
             settings: {
-              format,
-              captions: { enabled: true, size: short ? "lg" : "md", position: short ? "center" : "bottom", color: "#ffffff" },
+              captions: {
+                enabled: true,
+                size: short ? "lg" : "md",
+                position: short ? "center" : "bottom",
+                color: "#ffffff",
+              },
               pacing: short
                 ? { minSceneSeconds: 2.5, gapSeconds: 0.15 }
                 : { minSceneSeconds: 3, gapSeconds: 0.35 },
+              // Anything chosen in the production layout wins, but the frame
+              // shape always follows the format this row is being made for.
+              ...(data.settings ?? {}),
+              format,
             },
           });
         }
@@ -470,6 +479,7 @@ export const queueFromPrompts = createServerFn({ method: "POST" })
         language: z.string().min(2).max(40).default("English"),
         style: z.string().min(1).max(40).default("cinematic"),
         format: z.enum(["shorts", "longform"]).default("longform"),
+        settings: z.record(z.string(), z.unknown()).optional(),
         scheduledAt: z.string().datetime().nullable().optional(),
       })
       .parse(input),
@@ -530,7 +540,6 @@ export const queueFromPrompts = createServerFn({ method: "POST" })
         scheduled_at: data.scheduledAt ?? null,
         scenes: scenes as never,
         settings: {
-          format: data.format,
           captions: {
             enabled: true,
             size: data.format === "shorts" ? "lg" : "md",
@@ -541,6 +550,8 @@ export const queueFromPrompts = createServerFn({ method: "POST" })
             data.format === "shorts"
               ? { minSceneSeconds: 2.5, gapSeconds: 0.15 }
               : { minSceneSeconds: 3, gapSeconds: 0.35 },
+          ...(data.settings ?? {}),
+          format: data.format,
         } as never,
       })
       .select("*")
